@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.li.dao.Mapper">
+<select id="query" resultMap="StudentClass">
+    select s.学号 a,s.姓名 b,s.性别 c,s.出生日期 d,l.班级 e
+    from student  s,Class  l
+    where s.班级号=l.班级号;
+</select>
+    <resultMap id="StudentClass" type="com.li.pojo.student">
+        <result property="sid" column="a"/>     <!--主意数据库字段和实体类中的映射关系-->
+        <result property="name" column="b"/>     <!--这里一定要起别名a,b,c-->
+        <result property="sex" column="c"/>
+        <result property="birthday" column="d"/>
+        <association property="aClass" javaType="com.li.pojo.Class">
+
+          <result property="cass" column="e"/>
+        </association>
+    </resultMap>
+    <insert id="add" parameterType="map">
+        insert into student(学号,姓名,性别,出生日期,班级号)
+         value (#{sid},#{name},#{sex},#{birthday},#{classid})
+    </insert>
+    <delete id="delete" parameterType="String">
+        delete from student where 学号=#{sid};
+    </delete>
+    <update id="update" parameterType="String">
+        update student set 性别=#{sex},姓名=#{name},出生日期=#{birthday},班级号=#{classid},学号=#{sid} where 学号=#{sid};
+    </update>
+<select id="query2" resultMap="Scoure">
+    select sc.学号 a,sc.课程编号 b,sc.成绩 c,s.姓名 d,c.课程名称 e
+    from student s,Course c, Score sc
+    where sc.学号=s.学号 and sc.课程编号=c.课程编号
+</select>
+    <resultMap id="Scoure" type="com.li.pojo.Score">
+        <result property="sid" column="a"/>
+        <result property="classid" column="b"/>
+        <result property="grade" column="c"/>
+       <association property="student" javaType="com.li.pojo.student">
+           <result property="name" column="d"/>
+       </association>
+        <association property="course" javaType="com.li.pojo.Course">
+            <result property="classname" column="e"/>
+        </association>
+    </resultMap>
+</mapper>
